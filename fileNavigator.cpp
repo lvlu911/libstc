@@ -109,7 +109,7 @@ const string& fileNavigator::next()
 int main()
 {
 	Tokenizer::startup();
-	Tokenizer tk("abcdefgabc asfd  你好啊，美女。");
+	Tokenizer tk("abcdefgabc asfd  你好啊，美女。霍霍～");
 	for(int i = 0; i < tk.getTokens().size(); i++)
 		cout << tk.getTokens()[i] << endl;
 	Tokenizer::shutdown();
