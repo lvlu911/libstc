@@ -4,11 +4,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <string>
 #include <cstring>
 #include <cstdlib>
 #include <stack>
 
 using namespace std;
+
+namespace libstc
+{
 
 class fileNavigator
 {
@@ -21,5 +25,7 @@ private:
         string cur;
         string prefix;  
 };
+
+}
 
 #endif

@@ -1,5 +1,8 @@
 #include "NBayesModel.h"
 
+using namespace std;
+using namespace libstc;
+
 vector<string> NBayesModel::split(const string& str)
 {
 	vector<string> words;
@@ -23,22 +26,19 @@ vector<string> NBayesModel::split(const string& str)
 			word.push_back(str[i]);
 		}
 	}
+	if(inWord)
+		words.push_back(word);
+	return words;
 }
 
-inline const vector<string> & NBayesModel::getTypes()
+double NBayesModel::getFreq(int wordID, int docType)
 {
-	return types;
-}
-
-double NBayesModel::getFreq(int wordID, const string& docType)
-{
-	if(typeToIndex.count(docType) > 0)
+	if(docType >= 0 && docType <= types.size())
 	{
-		int index = (typeToIndex.find(docType))->second;
         	NBayesModel::FREQ_MAP_IT it1 = freqMap.find(wordID);
-        	if(it1 != freqMap.end())
+		if(it1 != freqMap.end())
        		{	    
-                	map<int,double>::iterator it2 = it1->second.find(index);
+                	map<int,double>::iterator it2 = it1->second.find(docType);
                 	if(it2 != it1->second.end())
                         	return it2->second;
                 	return 1.0 / freqMap.size();
@@ -49,13 +49,24 @@ double NBayesModel::getFreq(int wordID, const string& docType)
         return 0.0;
 }
 
-ostream& operator<<(ostream &os, const NBayesModel &model)
+void NBayesModel::setFreq(int wordID, int docType, double freq)
+{
+	freqMap[wordID][docType] = freq;
+}
+
+void NBayesModel::clear()
+{
+	types.clear();
+	freqMap.clear();
+}
+
+ostream& libstc::operator<<(ostream &os, const NBayesModel &model)
 {
 	int len = model.types.size();
 
 	for(int i = 0; i < len; i++)
-		cout << model.types[i] << " ";
-	cout << endl;
+		os << model.types[i] << " ";
+	os << endl;
 	
         for(NBayesModel::FREQ_MAP_CON_IT it1 = model.freqMap.begin(); it1 != model.freqMap.end(); it1++)
         {
@@ -71,15 +82,15 @@ ostream& operator<<(ostream &os, const NBayesModel &model)
         }
 }
 
-istream& operator>>(istream &is, NBayesModel &model)
+istream& libstc::operator>>(istream &is, NBayesModel &model)
 {
-        string line;
+        model.clear();
+
+	string line;
 	getline(is, line);
-	model.types = NBayesModel::split(line);
+	model.setTypes(NBayesModel::split(line));
+	
 	int len = model.types.size();
-	for(int i = 0; i < len; i++)
-		model.typeToIndex.insert(make_pair(model.types[i],i));
-		
 	vector<string> v;
         while(getline(is, line))
         {

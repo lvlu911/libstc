@@ -3,28 +3,48 @@
 
 #include <vector>
 #include <stack>
+#include <set>
 #include <cstring>
 #include <cstdlib>
+#include <string>
 #include "ICTCLAS50.h"
 
-#define POS_TGGER_TEST
-#ifdef POS_TAGGER_TEST
-bool g_bPOSTagged=true;
-#else
-bool g_bPOSTagged=false;
-#endif
-
 using namespace std;
+
+namespace libstc
+{
 
 class Tokenizer
 {
 public:
         static bool startup();
         static void shutdown();
-        Tokenizer(const char* s); 
-        vector<int> getTokens(){return tokens;}
+        Tokenizer(const string & s);
+	Tokenizer(const string & s, const set<int> & stop); 
+        vector<int> & getTokens();
 private:
+	void construct(const string & s);
         vector<int> tokens;
+	set<int> stopWords;
 };
+
+
+inline vector<int>& Tokenizer::getTokens()
+{
+	return tokens;
+}
+
+inline Tokenizer::Tokenizer(const string & s)
+{
+	construct(s);
+}
+
+inline Tokenizer::Tokenizer(const string & s, const set<int> & stop)
+{
+	stopWords = stop;
+	construct(s);
+}
+
+}
 
 #endif

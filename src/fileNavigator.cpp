@@ -1,5 +1,8 @@
 #include "fileNavigator.h"
 
+using namespace std;
+using namespace libstc;
+
 fileNavigator::fileNavigator(const string &dir)
 {
         DIR *d = opendir(dir.c_str());
